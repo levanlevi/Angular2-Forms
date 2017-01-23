@@ -1,0 +1,58 @@
+<h3 *ngIf="!languages || languages.length == 0">Loading....</h3>
+
+<div class="container" *ngIf="languages && languages.length > 0">
+    <h3>Employee Forms</h3>
+    <form #form="ngForm" (submit)="submitForm(form)" novalidate>
+        <div class="form-group" [class.has-error]="firstName.invalid && firstName.dirty">
+            <label class="control-label">First Name</label>
+            <input #firstName="ngModel" required type="text" class="form-control" name="firstName" [ngModel]='model.firstName' (ngModelChange)='firstNameToUpperCase($event)'
+            />
+            <div *ngIf="firstName.invalid && firstName.dirty" class="alert alert-danger">First name is required</div>
+            invalid: {{ firstName.invalid && firstName.dirty}}
+        </div>
+        <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" #lastName="ngModel" class="form-control" name="lastName" required [ngModel]='model.lastName' />
+            <div *ngIf="lastName.invalid && lastName.dirty" class="alert alert-danger">Last name is required</div>
+        </div>
+
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="is-full-time" 
+                [(ngModel)] = "model.isFullTime"> Full Time Employee
+            </label>
+        </div>
+
+        <label>Payment Type</label>
+        <div class="radio">
+            <label>
+                <input type="radio" name="paymentType" value="w2"
+                [(ngModel)] = "model.paymentType">
+                W2
+            </label>
+        </div>
+        <div class="radio">
+            <label>
+                <input type="radio" name="paymentType" value="1099"
+                [(ngModel)] = "model.paymentType">
+                1099
+            </label>
+        </div>
+
+        <div class="form-group" [class.has-error]="hasPrimaryLanguageError">
+            <label class="control-label">Languages</label>
+            <select class="form-control" #primaryLanguage name="primaryLanguage" (blur)="validatePrimaryLanguage(primaryLanguage.value)"
+                (change)="validatePrimaryLanguage(primaryLanguage.value)" [(ngModel)]="model.primaryLanguage">
+                <option value="default">Select a Language</option>
+                <option *ngFor="let lang of languages">
+                    {{ lang }}
+                </option>
+            </select>
+        </div>
+        Model: {{ model | json}}
+        <br> Angular: {{ form.value | json }}
+        <br> Forms: (validation) {{ form.valid }}
+        <br>
+        <button type="submit" [disabled]="form.invalid" class="btn btn-primary">OK</button>
+    </form>
+</div>
